@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>毛髪FP — ヘアプランニングシート</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=BIZ+UDPGothic:wght@400;700&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --ink:#111;--paper:#faf9f6;--cream:#f0ede6;
+  --gold:#9a7c3a;--gold-l:#f5eed8;--gold-d:#7a5f28;
+  --border:#ddd;--dim:#888;--red:#b83030;--red-l:#fdf0ef;
+  --blue:#1a4e8a;--blue-l:#eef3fb;
+  --green:#2e7a4f;--green-l:#edf7f1;
+}
+html,body{min-height:100%;background:var(--paper);
+  font-family:'BIZ UDPGothic',sans-serif;color:var(--ink);}
+
+/* HEADER */
+header{background:var(--ink);padding:14px 18px;
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;
+  font-weight:300;color:#fff;letter-spacing:.2em;}
+.logo em{font-style:italic;color:#c8a96e;}
+.logo-sub{font-size:.52rem;color:rgba(255,255,255,.35);letter-spacing:.12em;}
+.hd-step{font-family:'DM Sans',sans-serif;font-size:.65rem;
+  font-weight:700;color:rgba(255,255,255,.4);}
+
+/* PROGRESS */
+#prog-wrap{height:3px;background:#333;}
+#prog{height:100%;background:var(--gold);transition:width .4s ease;width:0%;}
+
+/* MAIN */
+main{max-width:480px;margin:0 auto;padding:20px 16px 80px;}
+
+/* SECTION */
+.section{display:none;}
+.section.active{display:block;}
+
+/* INTRO */
+.intro{text-align:center;padding:20px 0 24px;}
+.intro-badge{display:inline-block;background:var(--gold);color:#fff;
+  font-size:.58rem;font-weight:700;letter-spacing:.15em;
+  padding:4px 14px;border-radius:20px;margin-bottom:12px;}
+.intro-h{font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.5rem,6vw,2rem);font-weight:300;
+  line-height:1.3;letter-spacing:.06em;margin-bottom:8px;}
+.intro-h em{color:var(--gold);font-style:italic;}
+/* 数字をBIZ UDPGothicで大きく表示 */
+.intro-h .num{font-family:'BIZ UDPGothic',sans-serif;font-weight:700;
+  font-size:clamp(1.5rem,6vw,2rem);vertical-align:baseline;}
+.intro-line{width:28px;height:1px;background:var(--gold);margin:10px auto;}
+.intro-txt{font-size:.78rem;color:#555;line-height:1.85;}
+
+/* CARD */
+.card{background:#fff;border-radius:12px;border:1px solid var(--border);
+  padding:16px 16px;margin-bottom:12px;}
+.card-title{font-size:.62rem;font-weight:700;letter-spacing:.15em;
+  color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.card-h{font-size:.95rem;font-weight:700;margin-bottom:10px;line-height:1.4;}
+
+/* TOGGLE (いつも同じ / 迷子中) */
+.toggle-row{display:flex;gap:8px;margin-bottom:12px;}
+.toggle-btn{flex:1;padding:9px 8px;border-radius:8px;
+  border:1.5px solid var(--border);background:var(--paper);
+  font-family:'BIZ UDPGothic',sans-serif;font-size:.8rem;
+  font-weight:700;cursor:pointer;text-align:center;transition:all .15s;color:var(--dim);}
+.toggle-btn.on-same{background:var(--green-l);border-color:var(--green);color:var(--green);}
+.toggle-btn.on-lost{background:var(--red-l);border-color:var(--red);color:var(--red);}
+
+/* MENU ROWS */
+.menu-rows{display:flex;flex-direction:column;gap:8px;}
+.menu-row{display:flex;flex-direction:column;gap:4px;
+  padding:10px 12px;background:var(--cream);border-radius:8px;}
+.menu-row-top{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.menu-icon{font-size:.85rem;flex-shrink:0;}
+.menu-name{font-size:.82rem;font-weight:700;flex:1;}
+.menu-inputs{display:flex;gap:6px;align-items:center;}
+.mini-label{font-size:.6rem;color:var(--dim);white-space:nowrap;}
+.mini-input{
+  flex:1;padding:7px 8px;border-radius:6px;
+  border:1.5px solid var(--border);background:#fff;
+  font-family:'DM Sans',sans-serif;font-size:.82rem;
+  color:var(--ink);outline:none;text-align:center;min-width:0;
+}
+.mini-input:focus{border-color:var(--gold);}
+.mini-input::placeholder{color:var(--dim);font-size:.72rem;}
+
+/* CHOICE CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.chip{padding:7px 12px;border-radius:20px;
+  border:1.5px solid var(--border);background:var(--paper);
+  font-family:'BIZ UDPGothic',sans-serif;font-size:.75rem;
+  cursor:pointer;transition:all .15s;color:var(--dim);}
+.chip.selected{background:var(--gold);border-color:var(--gold);color:#fff;font-weight:700;}
+.chip.selected-red{background:var(--red);border-color:var(--red);color:#fff;font-weight:700;}
+
+/* CYCLE ROWS */
+.cycle-rows{display:flex;flex-direction:column;gap:10px;}
+.cycle-row{display:flex;align-items:center;gap:8px;}
+.cycle-label{font-size:.78rem;font-weight:700;width:64px;flex-shrink:0;}
+.cycle-chips{display:flex;gap:5px;flex-wrap:wrap;}
+.cycle-chip{padding:6px 10px;border-radius:16px;
+  border:1.5px solid var(--border);background:var(--paper);
+  font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:600;
+  cursor:pointer;transition:all .15s;color:var(--dim);}
+.cycle-chip.selected{background:var(--ink);border-color:var(--ink);color:#fff;}
+
+/* STARS */
+.stars{display:flex;gap:4px;margin-top:4px;}
+.star{font-size:1.6rem;cursor:pointer;transition:.1s;opacity:.3;}
+.star.on{opacity:1;}
+
+/* BUDGET SLIDER */
+.budget-display{background:var(--ink);border-radius:10px;
+  padding:12px 16px;margin-bottom:10px;text-align:center;}
+.budget-val{font-family:'DM Sans',sans-serif;font-size:1.6rem;
+  font-weight:700;color:#fff;}
+.budget-val span{font-size:.78rem;color:rgba(255,255,255,.45);}
+.budget-note{font-size:.6rem;color:rgba(255,255,255,.35);margin-top:2px;}
+input[type=range]{width:100%;-webkit-appearance:none;height:4px;
+  background:var(--border);border-radius:2px;outline:none;margin:6px 0;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;
+  width:24px;height:24px;border-radius:50%;background:var(--gold);
+  cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.range-labels{display:flex;justify-content:space-between;
+  font-size:.58rem;color:var(--dim);}
+
+/* SUMMARY BOX */
+.summary-box{background:var(--gold-l);border:1.5px solid var(--gold);
+  border-radius:10px;padding:12px 14px;margin-bottom:10px;}
+.summary-row{display:flex;justify-content:space-between;align-items:center;
+  padding:6px 0;border-bottom:1px solid rgba(154,124,58,.15);}
+.summary-row:last-child{border-bottom:none;}
+.summary-key{font-size:.75rem;color:#555;}
+.summary-val{font-family:'DM Sans',sans-serif;font-size:.85rem;
+  font-weight:700;color:var(--gold-d);}
+
+/* FREE TEXT */
+textarea{width:100%;padding:10px 12px;border-radius:8px;
+  border:1.5px solid var(--border);background:var(--paper);
+  font-family:'BIZ UDPGothic',sans-serif;font-size:.82rem;
+  color:var(--ink);resize:none;outline:none;line-height:1.6;min-height:72px;}
+textarea:focus{border-color:var(--gold);}
+
+/* NEXT BTN */
+.next-btn{width:100%;padding:14px;margin-top:14px;
+  background:var(--ink);color:#fff;border:none;
+  border-radius:12px;font-family:'BIZ UDPGothic',sans-serif;
+  font-size:.9rem;font-weight:700;cursor:pointer;
+  transition:all .15s;letter-spacing:.04em;}
+.next-btn:active{transform:scale(.98);}
+.next-btn:disabled{opacity:.3;pointer-events:none;}
+/* BACK BTN */
+.back-btn{width:100%;padding:12px;margin-top:8px;
+  background:transparent;color:var(--dim);
+  border:1.5px solid var(--border);
+  border-radius:12px;font-family:'BIZ UDPGothic',sans-serif;
+  font-size:.82rem;font-weight:700;cursor:pointer;
+  transition:all .15s;letter-spacing:.04em;}
+.back-btn:active{transform:scale(.98);background:var(--cream);}
+
+/* RESULT */
+.result-header{background:var(--ink);border-radius:14px;
+  padding:20px;margin-bottom:14px;text-align:center;}
+.result-h{font-family:'Cormorant Garamond',serif;font-size:1.5rem;
+  font-weight:300;color:#fff;letter-spacing:.1em;margin-bottom:4px;}
+.result-h em{color:#c8a96e;font-style:italic;}
+.result-sub{font-size:.65rem;color:rgba(255,255,255,.35);}
+
+.result-card{background:#fff;border-radius:12px;
+  border:1px solid var(--border);padding:14px 16px;margin-bottom:10px;}
+.rc-label{font-size:.58rem;font-weight:700;letter-spacing:.15em;
+  color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+.rc-value{font-size:.88rem;font-weight:700;color:var(--ink);line-height:1.6;}
+.rc-note{font-size:.7rem;color:var(--dim);margin-top:4px;line-height:1.5;}
+
+.plan-card{background:var(--gold-l);border:2px solid var(--gold);
+  border-radius:12px;padding:16px;margin-bottom:12px;}
+.plan-title{font-family:'Cormorant Garamond',serif;font-size:1rem;
+  font-weight:600;color:var(--gold-d);margin-bottom:10px;}
+.plan-item{display:flex;justify-content:space-between;align-items:flex-start;
+  padding:7px 0;border-bottom:1px solid rgba(154,124,58,.18);}
+.plan-item:last-child{border-bottom:none;}
+.plan-key{font-size:.75rem;color:#555;flex:1;}
+.plan-val{font-family:'DM Sans',sans-serif;font-size:.82rem;
+  font-weight:700;color:var(--gold-d);text-align:right;flex-shrink:0;}
+
+.comment-box{background:var(--cream);border-radius:10px;
+  padding:14px 14px;margin-bottom:12px;}
+.comment-label{font-size:.58rem;font-weight:700;letter-spacing:.12em;
+  color:var(--dim);margin-bottom:8px;text-transform:uppercase;}
+
+.action-btns{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.action-btn{width:100%;padding:13px;border-radius:12px;
+  font-family:'BIZ UDPGothic',sans-serif;font-size:.85rem;
+  font-weight:700;cursor:pointer;border:none;transition:all .15s;}
+.action-btn.gold{background:var(--gold);color:#fff;}
+.action-btn.black{background:var(--ink);color:#fff;}
+.action-btn.outline{background:transparent;border:2px solid var(--border);color:var(--ink);}
+
+.disc{font-size:.6rem;color:var(--dim);text-align:center;
+  line-height:1.75;margin-bottom:14px;}
+
+@media print{
+  header,#prog-wrap,.next-btn,.action-btns,#s1,#s2,#s3,#s4,#s5{display:none!important;}
+  #s-result{display:block!important;}
+  body{background:#fff;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">ReBALANCE <em>FP</em></div>
+    <div class="logo-sub">Hair Financial Planning</div>
+  </div>
+  <div class="hd-step" id="hd-step">STEP 1 / 5</div>
+</header>
+<div id="prog-wrap"><div id="prog"></div></div>
+
+<main>
+
+<!-- ══ STEP 1: 現状把握（美容室） ══ -->
+<div class="section active" id="s1">
+  <div class="intro">
+    <div class="intro-badge">STEP 01 / 05 — 現状把握</div>
+    <div class="intro-h">過去<span class="num">1</span>年間の<br><em>美容室での実績</em>を教えてください</div>
+    <div class="intro-line"></div>
+    <div class="intro-txt">金額・回数はおおよそで構いません。<br>「0円・0回」でもOKです。</div>
+  </div>
+
+  <!-- いつも同じ / 迷子中 -->
+  <div class="card">
+    <div class="card-title">美容室について</div>
+    <div class="toggle-row">
+      <button class="toggle-btn" onclick="setToggle('salon','same',this)">✅ いつも同じお店</button>
+      <button class="toggle-btn" onclick="setToggle('salon','lost',this)">🔍 迷子中</button>
+    </div>
+    <div id="salon-lost-wrap" style="display:none;">
+      <div style="font-size:.72rem;color:var(--dim);margin-bottom:6px;">迷子の理由（複数可）</div>
+      <div class="chips" id="salon-lost-chips">
+        <div class="chip" onclick="toggleChip(this,'salonLost')">担当者が変わった・退職した</div>
+        <div class="chip" onclick="toggleChip(this,'salonLost')">引っ越しをした</div>
+        <div class="chip" onclick="toggleChip(this,'salonLost')">値段が合わなくなった</div>
+        <div class="chip" onclick="toggleChip(this,'salonLost')">仕上がりに満足できなかった</div>
+        <div class="chip" onclick="toggleChip(this,'salonLost')">通いにくくなった</div>
+        <div class="chip" onclick="toggleChip(this,'salonLost')">なんとなく変えたかった</div>
+        <div class="chip" onclick="toggleChip(this,'salonLost')">「ここ！」という店に出会えていない</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 施術実績 -->
+  <div class="card">
+    <div class="card-title">施術実績（過去1年）</div>
+    <div class="menu-rows">
+      <div class="menu-row">
+        <div class="menu-row-top"><span class="menu-icon">✂️</span><span class="menu-name">カット</span></div>
+        <div class="menu-inputs">
+          <span class="mini-label">1回</span>
+          <input class="mini-input" type="number" id="cut-price" placeholder="円" min="0">
+          <span class="mini-label">円 ×</span>
+          <input class="mini-input" type="number" id="cut-count" placeholder="回" min="0" max="24">
+          <span class="mini-label">回/年</span>
+        </div>
+      </div>
+      <div class="menu-row">
+        <div class="menu-row-top"><span class="menu-icon">🎨</span><span class="menu-name">カラー</span></div>
+        <div class="menu-inputs">
+          <span class="mini-label">1回</span>
+          <input class="mini-input" type="number" id="color-price" placeholder="円" min="0">
+          <span class="mini-label">円 ×</span>
+          <input class="mini-input" type="number" id="color-count" placeholder="回" min="0" max="24">
+          <span class="mini-label">回/年</span>
+        </div>
+      </div>
+      <div class="menu-row">
+        <div class="menu-row-top"><span class="menu-icon">✨</span><span class="menu-name">トリートメント</span></div>
+        <div class="menu-inputs">
+          <span class="mini-label">1回</span>
+          <input class="mini-input" type="number" id="tr-price" placeholder="円" min="0">
+          <span class="mini-label">円 ×</span>
+          <input class="mini-input" type="number" id="tr-count" placeholder="回" min="0" max="24">
+          <span class="mini-label">回/年</span>
+        </div>
+      </div>
+      <div class="menu-row">
+        <div class="menu-row-top"><span class="menu-icon">〜</span><span class="menu-name">パーマ</span></div>
+        <div class="menu-inputs">
+          <span class="mini-label">1回</span>
+          <input class="mini-input" type="number" id="perm-price" placeholder="円" min="0">
+          <span class="mini-label">円 ×</span>
+          <input class="mini-input" type="number" id="perm-count" placeholder="回" min="0" max="12">
+          <span class="mini-label">回/年</span>
+        </div>
+      </div>
+      <div class="menu-row">
+        <div class="menu-row-top"><span class="menu-icon">💫</span><span class="menu-name">縮毛矯正</span></div>
+        <div class="menu-inputs">
+          <span class="mini-label">1回</span>
+          <input class="mini-input" type="number" id="kyosei-price" placeholder="円" min="0">
+          <span class="mini-label">円 ×</span>
+          <input class="mini-input" type="number" id="kyosei-count" placeholder="回" min="0" max="12">
+          <span class="mini-label">回/年</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="goStep(2)">次へ →</button>
+</div>
+
+<!-- ══ STEP 2: 現状把握（ヘアケア剤） ══ -->
+<div class="section" id="s2">
+  <div class="intro">
+    <div class="intro-badge">STEP 02 / 05 — ヘアケア剤</div>
+    <div class="intro-h">過去<span class="num">1</span>年間の<br><em>ヘアケア剤の実績</em>を教えてください</div>
+    <div class="intro-line"></div>
+    <div class="intro-txt">商品名は任意です。おおよその金額・回数で大丈夫です。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">ヘアケア剤について</div>
+    <div class="toggle-row">
+      <button class="toggle-btn" onclick="setToggle('care','same',this)">✅ いつも同じ商品</button>
+      <button class="toggle-btn" onclick="setToggle('care','lost',this)">🔍 迷子中</button>
+    </div>
+    <div id="care-lost-wrap" style="display:none;">
+      <div style="font-size:.72rem;color:var(--dim);margin-bottom:6px;">迷子の理由（複数可）</div>
+      <div class="chips" id="care-lost-chips">
+        <div class="chip" onclick="toggleChip(this,'careLost')">使い切ったタイミングで変えた</div>
+        <div class="chip" onclick="toggleChip(this,'careLost')">効果を感じられなかった</div>
+        <div class="chip" onclick="toggleChip(this,'careLost')">サロンでおすすめされたものを使っている</div>
+        <div class="chip" onclick="toggleChip(this,'careLost')">ドラッグストアで気になったものを買っている</div>
+        <div class="chip" onclick="toggleChip(this,'careLost')">何が自分に合うかわからない</div>
+        <div class="chip" onclick="toggleChip(this,'careLost')">価格で選んでいる</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">ヘアケア剤実績（過去1年）</div>
+    <div class="menu-rows">
+      <div class="menu-row">
+        <div class="menu-row-top"><span class="menu-icon">🧴</span><span class="menu-name">シャンプー</span></div>
+        <input class="mini-input" type="text" id="shampoo-name" placeholder="商品名（任意）" style="width:100%;margin-bottom:6px;">
+        <div class="menu-inputs">
+          <span class="mini-label">1本</span>
+          <input class="mini-input" type="number" id="shampoo-price" placeholder="円" min="0">
+          <span class="mini-label">円 ×</span>
+          <input class="mini-input" type="number" id="shampoo-count" placeholder="本" min="0">
+          <span class="mini-label">本/年</span>
+        </div>
+      </div>
+      <div class="menu-row">
+        <div class="menu-row-top"><span class="menu-icon">🫧</span><span class="menu-name">インバストリートメント</span></div>
+        <input class="mini-input" type="text" id="inbath-name" placeholder="商品名（任意）" style="width:100%;margin-bottom:6px;">
+        <div class="menu-inputs">
+          <span class="mini-label">1本</span>
+          <input class="mini-input" type="number" id="inbath-price" placeholder="円" min="0">
+          <span class="mini-label">円 ×</span>
+          <input class="mini-input" type="number" id="inbath-count" placeholder="本" min="0">
+          <span class="mini-label">本/年</span>
+        </div>
+      </div>
+      <div class="menu-row">
+        <div class="menu-row-top"><span class="menu-icon">💆</span><span class="menu-name">アウトバストリートメント①</span></div>
+        <input class="mini-input" type="text" id="outbath1-name" placeholder="商品名（任意）" style="width:100%;margin-bottom:6px;">
+        <div class="menu-inputs">
+          <span class="mini-label">1本</span>
+          <input class="mini-input" type="number" id="outbath1-price" placeholder="円" min="0">
+          <span class="mini-label">円 ×</span>
+          <input class="mini-input" type="number" id="outbath1-count" placeholder="本" min="0">
+          <span class="mini-label">本/年</span>
+        </div>
+      </div>
+      <div class="menu-row">
+        <div class="menu-row-top"><span class="menu-icon">💆</span><span class="menu-name">アウトバストリートメント②</span></div>
+        <input class="mini-input" type="text" id="outbath2-name" placeholder="商品名（任意）" style="width:100%;margin-bottom:6px;">
+        <div class="menu-inputs">
+          <span class="mini-label">1本</span>
+          <input class="mini-input" type="number" id="outbath2-price" placeholder="円" min="0">
+          <span class="mini-label">円 ×</span>
+          <input class="mini-input" type="number" id="outbath2-count" placeholder="本" min="0">
+          <span class="mini-label">本/年</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="goStep(3)">次へ →</button>
+  <button class="back-btn" onclick="goStep(1)">← 戻る</button>
+</div>
+
+<!-- ══ STEP 3: 満足度・理想の周期 ══ -->
+<div class="section" id="s3">
+  <div class="intro">
+    <div class="intro-badge">STEP 03 / 05 — 満足度・理想</div>
+    <div class="intro-h">現状の満足度と<br><em>理想のサイクル</em>を教えてください</div>
+    <div class="intro-line"></div>
+  </div>
+
+  <!-- 満足度 -->
+  <div class="card">
+    <div class="card-title">現状の満足度</div>
+    <div class="card-h">今の髪の状態・ヘアケアへの満足度は？</div>
+    <div class="stars" id="stars">
+      <span class="star" onclick="setStar(1)">⭐</span>
+      <span class="star" onclick="setStar(2)">⭐</span>
+      <span class="star" onclick="setStar(3)">⭐</span>
+      <span class="star" onclick="setStar(4)">⭐</span>
+      <span class="star" onclick="setStar(5)">⭐</span>
+    </div>
+    <div id="star-label" style="font-size:.72rem;color:var(--dim);margin-top:6px;">タップして評価</div>
+  </div>
+
+  <!-- 理想の周期 -->
+  <div class="card">
+    <div class="card-title">理想のサイクル</div>
+    <div class="card-h">本当はどのくらいの頻度で通いたいですか？</div>
+    <div class="cycle-rows">
+      <div class="cycle-row">
+        <div class="cycle-label">✂️ カット</div>
+        <div class="cycle-chips" id="cycle-cut">
+          <div class="cycle-chip" onclick="setCycle('cut',30,this)">30日</div>
+          <div class="cycle-chip" onclick="setCycle('cut',45,this)">45日</div>
+          <div class="cycle-chip" onclick="setCycle('cut',60,this)">60日</div>
+          <div class="cycle-chip" onclick="setCycle('cut',90,this)">90日</div>
+        </div>
+      </div>
+      <div class="cycle-row">
+        <div class="cycle-label">🎨 カラー</div>
+        <div class="cycle-chips" id="cycle-color">
+          <div class="cycle-chip" onclick="setCycle('color',0,this)">しない</div>
+          <div class="cycle-chip" onclick="setCycle('color',30,this)">30日</div>
+          <div class="cycle-chip" onclick="setCycle('color',45,this)">45日</div>
+          <div class="cycle-chip" onclick="setCycle('color',60,this)">60日</div>
+          <div class="cycle-chip" onclick="setCycle('color',90,this)">90日</div>
+        </div>
+      </div>
+      <div class="cycle-row">
+        <div class="cycle-label">✨ トリート</div>
+        <div class="cycle-chips" id="cycle-tr">
+          <div class="cycle-chip" onclick="setCycle('tr',0,this)">しない</div>
+          <div class="cycle-chip" onclick="setCycle('tr',30,this)">30日</div>
+          <div class="cycle-chip" onclick="setCycle('tr',45,this)">45日</div>
+          <div class="cycle-chip" onclick="setCycle('tr',60,this)">60日</div>
+          <div class="cycle-chip" onclick="setCycle('tr',90,this)">90日</div>
+        </div>
+      </div>
+      <div class="cycle-row">
+        <div class="cycle-label">〜 パーマ</div>
+        <div class="cycle-chips" id="cycle-perm">
+          <div class="cycle-chip" onclick="setCycle('perm',0,this)">しない</div>
+          <div class="cycle-chip" onclick="setCycle('perm',45,this)">1.5ヶ月</div>
+          <div class="cycle-chip" onclick="setCycle('perm',60,this)">2ヶ月</div>
+          <div class="cycle-chip" onclick="setCycle('perm',120,this)">4ヶ月</div>
+          <div class="cycle-chip" onclick="setCycle('perm',180,this)">6ヶ月</div>
+        </div>
+      </div>
+      <div class="cycle-row">
+        <div class="cycle-label">💫 矯正</div>
+        <div class="cycle-chips" id="cycle-kyosei">
+          <div class="cycle-chip" onclick="setCycle('kyosei',0,this)">しない</div>
+          <div class="cycle-chip" onclick="setCycle('kyosei',45,this)">1.5ヶ月</div>
+          <div class="cycle-chip" onclick="setCycle('kyosei',60,this)">2ヶ月</div>
+          <div class="cycle-chip" onclick="setCycle('kyosei',120,this)">4ヶ月</div>
+          <div class="cycle-chip" onclick="setCycle('kyosei',180,this)">6ヶ月</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="goStep(4)">次へ →</button>
+  <button class="back-btn" onclick="goStep(2)">← 戻る</button>
+</div>
+
+<!-- ══ STEP 4: 予算 ══ -->
+<div class="section" id="s4">
+  <div class="intro">
+    <div class="intro-badge">STEP 04 / 05 — 予算</div>
+    <div class="intro-h">実際にかけられる<br><em>年間予算</em>を教えてください</div>
+    <div class="intro-line"></div>
+    <div class="intro-txt">美容室への予算（ヘアケア剤は別途）でお答えください。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">年間の美容室予算</div>
+    <div class="budget-display">
+      <div class="budget-val" id="budget-val">¥120,000 <span>/ 年</span></div>
+      <div class="budget-note" id="budget-note">月換算 約¥10,000</div>
+    </div>
+    <input type="range" id="budget-slider" min="0" max="14" value="6"
+      oninput="updateBudget(this.value)">
+    <div class="range-labels"><span>¥30,000〜</span><span>¥600,000〜</span></div>
+  </div>
+
+  <!-- 理想との比較 -->
+  <div class="card" id="ideal-compare" style="display:none;">
+    <div class="card-title">理想の周期との比較</div>
+    <div id="ideal-summary"></div>
+  </div>
+
+  <button class="next-btn" onclick="goStep(5)">次へ →</button>
+  <button class="back-btn" onclick="goStep(3)">← 戻る</button>
+</div>
+
+<!-- ══ STEP 5: お悩み・イベント ══ -->
+<div class="section" id="s5">
+  <div class="intro">
+    <div class="intro-badge">STEP 05 / 05 — お悩み・イベント</div>
+    <div class="intro-h">美容師に<br><em>相談したいこと</em>を教えてください</div>
+    <div class="intro-line"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">気になること・解決したいお悩み（複数可）</div>
+    <div class="chips" id="concern-chips">
+      <div class="chip" onclick="toggleChip(this,'concerns')">ダメージ・傷み</div>
+      <div class="chip" onclick="toggleChip(this,'concerns')">くせ・うねり</div>
+      <div class="chip" onclick="toggleChip(this,'concerns')">乾燥・パサつき</div>
+      <div class="chip" onclick="toggleChip(this,'concerns')">ボリューム</div>
+      <div class="chip" onclick="toggleChip(this,'concerns')">カラーの色持ち</div>
+      <div class="chip" onclick="toggleChip(this,'concerns')">パーマの持ち</div>
+      <div class="chip" onclick="toggleChip(this,'concerns')">矯正の持ち</div>
+      <div class="chip" onclick="toggleChip(this,'concerns')">頭皮トラブル</div>
+      <div class="chip" onclick="toggleChip(this,'concerns')">ホームケアの方法</div>
+      <div class="chip" onclick="toggleChip(this,'concerns')">スタイリングが決まらない</div>
+    </div>
+    <div style="margin-top:10px;">
+      <div style="font-size:.72rem;color:var(--dim);margin-bottom:5px;">その他・自由記入</div>
+      <textarea id="concern-free" placeholder="気になることを自由にご記入ください"></textarea>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">美容イベント・目標（任意）</div>
+    <div class="chips" id="event-chips">
+      <div class="chip" onclick="toggleChip(this,'events')">結婚式</div>
+      <div class="chip" onclick="toggleChip(this,'events')">成人式・卒業式</div>
+      <div class="chip" onclick="toggleChip(this,'events')">撮影・写真</div>
+      <div class="chip" onclick="toggleChip(this,'events')">就活・転職</div>
+      <div class="chip" onclick="toggleChip(this,'events')">旅行</div>
+      <div class="chip" onclick="toggleChip(this,'events')">その他</div>
+    </div>
+    <div style="margin-top:10px;">
+      <div style="font-size:.72rem;color:var(--dim);margin-bottom:5px;">予定の時期（任意）</div>
+      <input class="mini-input" type="text" id="event-date"
+        placeholder="例：2026年6月" style="width:100%;padding:10px 12px;">
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="showResult()">プランを見る ✨</button>
+  <button class="back-btn" onclick="goStep(4)">← 戻る</button>
+</div>
+
+<!-- ══ RESULT ══ -->
+<div class="section" id="s-result">
+  <div class="result-header">
+    <div class="result-h">あなたの<em>ヘアプラン</em></div>
+    <div class="result-sub" id="r-date">Hair Financial Planning Sheet</div>
+  </div>
+
+  <!-- 現状 -->
+  <div class="result-card">
+    <div class="rc-label">過去1年間の実績（美容室）</div>
+    <div class="rc-value" id="r-salon-actual">—</div>
+    <div class="rc-note" id="r-salon-status">—</div>
+  </div>
+
+  <div class="result-card">
+    <div class="rc-label">過去1年間の実績（ヘアケア剤）</div>
+    <div class="rc-value" id="r-care-actual">—</div>
+    <div class="rc-note" id="r-care-status">—</div>
+  </div>
+
+  <!-- 年間使用総額 -->
+  <div class="result-card">
+    <div class="rc-label">年間使用総額（実績）</div>
+    <div class="rc-value" id="r-total-actual">—</div>
+  </div>
+
+  <!-- 満足度 -->
+  <div class="result-card">
+    <div class="rc-label">現状満足度</div>
+    <div class="rc-value" id="r-satisfaction">—</div>
+  </div>
+
+  <!-- プラン -->
+  <div class="plan-card">
+    <div class="plan-title">💰 理想を叶えるヘアプラン</div>
+    <div id="r-plan-rows">—</div>
+    <div class="plan-item" style="margin-top:6px;padding-top:10px;border-top:2px solid rgba(154,124,58,.3);border-bottom:none;">
+      <div class="plan-key" style="font-weight:700;">理想の年間合計</div>
+      <div class="plan-val" id="r-ideal-total">—</div>
+    </div>
+    <div class="plan-item" style="border-bottom:none;">
+      <div class="plan-key" style="font-weight:700;">実際の予算</div>
+      <div class="plan-val" id="r-real-budget">—</div>
+    </div>
+    <div class="plan-item" style="border-bottom:none;">
+      <div class="plan-key">差額（余裕 or 不足）</div>
+      <div class="plan-val" id="r-diff">—</div>
+    </div>
+  </div>
+
+  <!-- お悩み -->
+  <div class="result-card">
+    <div class="rc-label">相談したいこと</div>
+    <div class="rc-value" id="r-concerns">—</div>
+    <div class="rc-note" id="r-concern-free"></div>
+  </div>
+
+  <div class="result-card" id="r-event-card">
+    <div class="rc-label">イベント・目標</div>
+    <div class="rc-value" id="r-events">—</div>
+    <div class="rc-note" id="r-event-date"></div>
+  </div>
+
+  <!-- 美容師コメント -->
+  <div class="comment-box">
+    <div class="comment-label">💬 美容師からのご提案（来店時記入）</div>
+    <textarea placeholder="カウンセリング後にこちらへご記入します" rows="5" style="background:#fff;border:1.5px solid var(--border);border-radius:8px;width:100%;padding:10px;font-family:'BIZ UDPGothic',sans-serif;font-size:.8rem;resize:none;outline:none;"></textarea>
+    <div style="margin-top:8px;font-size:.7rem;color:var(--dim);">解決までの目安期間：</div>
+    <input class="mini-input" type="text" placeholder="例：約3〜6ヶ月" style="width:100%;margin-top:4px;padding:9px 12px;">
+  </div>
+
+  <div class="disc">
+    ※日本の平均的な美容室への支出は年収の約3%とされています。<br>
+    このシートは目安としてご参考ください。<br>
+    （各AIによる公的機関データをもとにした分析より）
+  </div>
+
+  <div class="action-btns">
+    <button class="action-btn gold" onclick="window.print()">📄 PDFとして保存・印刷</button>
+    <button class="action-btn black" onclick="shareResult()">📤 LINEで共有</button>
+    <button class="action-btn outline" onclick="location.reload()">← もう一度入力する</button>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ── STATE ──
+const D = {
+  salon: null, salonLost: [],
+  care: null, careLost: [],
+  salon_cut: {price:0,count:0}, salon_color: {price:0,count:0},
+  salon_tr: {price:0,count:0}, salon_perm: {price:0,count:0},
+  salon_kyosei: {price:0,count:0},
+  care_shampoo: {name:'',price:0,count:0},
+  care_inbath: {name:'',price:0,count:0},
+  care_outbath1: {name:'',price:0,count:0},
+  care_outbath2: {name:'',price:0,count:0},
+  satisfaction: 0,
+  cycle: {cut:null,color:null,tr:null,perm:null,kyosei:null},
+  budget: 120000,
+  concerns: [], concernFree: '',
+  events: [], eventDate: ''
+};
+
+// ── TOGGLE (same/lost) ──
+function setToggle(key, val, btn){
+  D[key] = val;
+  const wrap = document.getElementById(`${key}-lost-wrap`);
+  btn.parentElement.querySelectorAll('.toggle-btn').forEach(b=>{
+    b.classList.remove('on-same','on-lost');
+  });
+  btn.classList.add(val==='same'?'on-same':'on-lost');
+  if(wrap) wrap.style.display = val==='lost' ? 'block' : 'none';
+}
+
+// ── CHIPS ──
+function toggleChip(el, key){
+  el.classList.toggle('selected');
+  const val = el.textContent.trim();
+  if(el.classList.contains('selected')){
+    if(!D[key]) D[key] = [];
+    if(!D[key].includes(val)) D[key].push(val);
+  } else {
+    if(D[key]) D[key] = D[key].filter(v=>v!==val);
+  }
+}
+
+// ── STARS ──
+function setStar(n){
+  D.satisfaction = n;
+  document.querySelectorAll('.star').forEach((s,i)=>{
+    s.classList.toggle('on', i < n);
+  });
+  const labels = ['','😞 不満','😕 やや不満','😐 普通','😊 満足','😍 とても満足'];
+  document.getElementById('star-label').textContent = labels[n];
+}
+
+// ── CYCLE ──
+function setCycle(key, days, el){
+  D.cycle[key] = days;
+  el.closest('.cycle-chips').querySelectorAll('.cycle-chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ── BUDGET ──
+const budgetSteps=[30000,50000,70000,90000,120000,150000,180000,
+  200000,250000,300000,350000,400000,450000,500000,600000];
+function updateBudget(idx){
+  const v = budgetSteps[idx]; D.budget = v;
+  document.getElementById('budget-val').innerHTML=`¥${v.toLocaleString()} <span>/ 年</span>`;
+  document.getElementById('budget-note').textContent=`月換算 約¥${Math.round(v/12).toLocaleString()}`;
+}
+
+// ── NAVIGATION ──
+let curStep = 1;
+function goStep(n){
+  // 現ステップのデータを保存（前後どちらに進む場合も）
+  if(curStep===1) collectStep1();
+  if(curStep===2) collectStep2();
+  if(curStep===4) showIdealCompare();
+
+  document.getElementById(`s${curStep}`).classList.remove('active');
+  curStep = n;
+  document.getElementById(`s${curStep}`).classList.add('active');
+  document.getElementById('hd-step').textContent = `STEP ${n} / 5`;
+  document.getElementById('prog').style.width = ((n-1)/5*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function collectStep1(){
+  D.salon_cut = {price: +document.getElementById('cut-price').value||0, count: +document.getElementById('cut-count').value||0};
+  D.salon_color = {price: +document.getElementById('color-price').value||0, count: +document.getElementById('color-count').value||0};
+  D.salon_tr = {price: +document.getElementById('tr-price').value||0, count: +document.getElementById('tr-count').value||0};
+  D.salon_perm = {price: +document.getElementById('perm-price').value||0, count: +document.getElementById('perm-count').value||0};
+  D.salon_kyosei = {price: +document.getElementById('kyosei-price').value||0, count: +document.getElementById('kyosei-count').value||0};
+}
+
+function collectStep2(){
+  D.care_shampoo = {name:document.getElementById('shampoo-name').value, price:+document.getElementById('shampoo-price').value||0, count:+document.getElementById('shampoo-count').value||0};
+  D.care_inbath = {name:document.getElementById('inbath-name').value, price:+document.getElementById('inbath-price').value||0, count:+document.getElementById('inbath-count').value||0};
+  D.care_outbath1 = {name:document.getElementById('outbath1-name').value, price:+document.getElementById('outbath1-price').value||0, count:+document.getElementById('outbath1-count').value||0};
+  D.care_outbath2 = {name:document.getElementById('outbath2-name').value, price:+document.getElementById('outbath2-price').value||0, count:+document.getElementById('outbath2-count').value||0};
+}
+
+// ── IDEAL COMPARE ──
+function cycleToCount(days){ return days===0 ? 0 : Math.round(365/days); }
+
+function showIdealCompare(){
+  const c = D.cycle;
+  const allSet = Object.values(c).every(v=>v!==null);
+  if(!allSet) return;
+  const card = document.getElementById('ideal-compare');
+  const wrap = document.getElementById('ideal-summary');
+  const items = [
+    {label:'カット', key:'cut', price: D.salon_cut.price||5000},
+    {label:'カラー', key:'color', price: D.salon_color.price||10000},
+    {label:'トリートメント', key:'tr', price: D.salon_tr.price||5000},
+    {label:'パーマ', key:'perm', price: D.salon_perm.price||12000},
+    {label:'縮毛矯正', key:'kyosei', price: D.salon_kyosei.price||20000},
+  ];
+  let html = '';
+  let idealTotal = 0;
+  items.forEach(it=>{
+    const count = cycleToCount(c[it.key]);
+    const total = count * it.price;
+    idealTotal += total;
+    if(count > 0){
+      html += `<div class="summary-row">
+        <div class="summary-key">${it.label}（年${count}回）</div>
+        <div class="summary-val">¥${total.toLocaleString()}</div>
+      </div>`;
+    }
+  });
+  html += `<div class="summary-row">
+    <div class="summary-key" style="font-weight:700;">理想の年間合計</div>
+    <div class="summary-val">¥${idealTotal.toLocaleString()}</div>
+  </div>`;
+  D._idealTotal = idealTotal;
+  wrap.innerHTML = `<div class="summary-box">${html}</div>`;
+  card.style.display = 'block';
+}
+
+// ── RESULT ──
+function showResult(){
+  collectStep1();
+  collectStep2();
+  D.concernFree = document.getElementById('concern-free').value;
+  D.eventDate = document.getElementById('event-date').value;
+
+  // activate result
+  document.getElementById('s5').classList.remove('active');
+  document.getElementById('s-result').classList.add('active');
+  document.getElementById('prog').style.width = '100%';
+  document.getElementById('hd-step').textContent = 'PLAN';
+
+  // date
+  const now = new Date();
+  document.getElementById('r-date').textContent =
+    `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 作成`;
+
+  // 美容室実績
+  const salonItems = [
+    {label:'カット', d:D.salon_cut},
+    {label:'カラー', d:D.salon_color},
+    {label:'トリートメント', d:D.salon_tr},
+    {label:'パーマ', d:D.salon_perm},
+    {label:'縮毛矯正', d:D.salon_kyosei},
+  ];
+  let salonTotal = 0;
+  let salonTxt = '';
+  salonItems.forEach(it=>{
+    const t = it.d.price * it.d.count;
+    if(it.d.count > 0 || it.d.price > 0){
+      salonTxt += `${it.label}：¥${it.d.price.toLocaleString()}×${it.d.count}回 `;
+      salonTotal += t;
+    }
+  });
+  document.getElementById('r-salon-actual').textContent =
+    salonTxt || '入力なし';
+  document.getElementById('r-salon-status').textContent =
+    `年間合計：¥${salonTotal.toLocaleString()} ／ ${D.salon==='lost'?'🔍 迷子中（'+D.salonLost.join('・')+'）':'✅ いつも同じお店'}`;
+
+  // ヘアケア実績
+  const careItems = [
+    {label:'シャンプー', d:D.care_shampoo},
+    {label:'インバス', d:D.care_inbath},
+    {label:'アウトバス①', d:D.care_outbath1},
+    {label:'アウトバス②', d:D.care_outbath2},
+  ];
+  let careTotal = 0;
+  let careTxt = '';
+  careItems.forEach(it=>{
+    const t = it.d.price * it.d.count;
+    if(it.d.count > 0 || it.d.price > 0){
+      const nm = it.d.name ? `（${it.d.name}）` : '';
+      careTxt += `${it.label}${nm}：¥${it.d.price.toLocaleString()}×${it.d.count}本 `;
+      careTotal += t;
+    }
+  });
+  document.getElementById('r-care-actual').textContent = careTxt || '入力なし';
+  document.getElementById('r-care-status').textContent =
+    `年間合計：¥${careTotal.toLocaleString()} ／ ${D.care==='lost'?'🔍 迷子中（'+D.careLost.join('・')+'）':'✅ いつも同じ商品'}`;
+
+  // 年間使用総額
+  document.getElementById('r-total-actual').textContent =
+    `¥${(salonTotal+careTotal).toLocaleString()}（美容室 + ヘアケア剤）`;
+
+  // 満足度
+  const starLabels=['','😞 不満','😕 やや不満','😐 普通','😊 満足','😍 とても満足'];
+  document.getElementById('r-satisfaction').textContent =
+    D.satisfaction > 0 ? `${'⭐'.repeat(D.satisfaction)} ${starLabels[D.satisfaction]}` : '未回答';
+
+  // 理想プラン
+  const c = D.cycle;
+  const menuDefs = [
+    {label:'✂️ カット', key:'cut', price:D.salon_cut.price||5000},
+    {label:'🎨 カラー', key:'color', price:D.salon_color.price||10000},
+    {label:'✨ トリートメント', key:'tr', price:D.salon_tr.price||5000},
+    {label:'〜 パーマ', key:'perm', price:D.salon_perm.price||12000},
+    {label:'💫 縮毛矯正', key:'kyosei', price:D.salon_kyosei.price||20000},
+  ];
+  let planHtml = '';
+  let idealTotal = 0;
+  menuDefs.forEach(m=>{
+    const days = c[m.key];
+    if(days === null) return;
+    const count = days === 0 ? 0 : Math.round(365/days);
+    const total = count * m.price;
+    idealTotal += total;
+    const cycle = days===0?'なし':days<60?`${days}日に1回`:`${Math.round(days/30)}ヶ月に1回`;
+    if(count > 0){
+      planHtml += `<div class="plan-item">
+        <div class="plan-key">${m.label}（${cycle} / 年${count}回）</div>
+        <div class="plan-val">¥${total.toLocaleString()}</div>
+      </div>`;
+    }
+  });
+  document.getElementById('r-plan-rows').innerHTML = planHtml || '<div class="plan-item"><div class="plan-key">周期未選択</div></div>';
+  document.getElementById('r-ideal-total').textContent = `¥${idealTotal.toLocaleString()}`;
+
+  const real = D.budget;
+  const diff = real - idealTotal;
+  document.getElementById('r-real-budget').textContent = `¥${real.toLocaleString()}`;
+  const diffEl = document.getElementById('r-diff');
+  if(diff >= 0){
+    diffEl.textContent = `+¥${diff.toLocaleString()}（余裕あり）`;
+    diffEl.style.color = 'var(--green)';
+  } else {
+    diffEl.textContent = `-¥${Math.abs(diff).toLocaleString()}（予算オーバー）`;
+    diffEl.style.color = 'var(--red)';
+  }
+
+  // お悩み
+  document.getElementById('r-concerns').textContent =
+    D.concerns.length > 0 ? D.concerns.join('・') : '特になし';
+  if(D.concernFree){
+    document.getElementById('r-concern-free').textContent = `備考：${D.concernFree}`;
+  }
+
+  // イベント
+  const evEl = document.getElementById('r-events');
+  evEl.textContent = D.events.length > 0 ? D.events.join('・') : '特になし';
+  if(D.eventDate){
+    document.getElementById('r-event-date').textContent = `予定時期：${D.eventDate}`;
+  }
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── SHARE ──
+function shareResult(){
+  const txt = `【ヘアプランシート】\n年間予算：¥${D.budget.toLocaleString()}\n\nReBALANCE FP`;
+  if(navigator.share){
+    navigator.share({title:'ヘアプランシート', text:txt});
+  } else {
+    navigator.clipboard.writeText(txt).then(()=>alert('クリップボードにコピーしました！'));
+  }
+}
+
+// init
+updateBudget(6);
+</script>
+</body>
+</html>
